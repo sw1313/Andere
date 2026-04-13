@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Andere</string>
+    <string name="browse">浏览</string>
+    <string name="settings">设置</string>
+    <string name="detail">详情</string>
+    <string name="search_hint">搜索标签</string>
+    <string name="apply_wallpaper">设为壁纸</string>
+    <string name="apply_lockscreen">设为锁屏</string>
+    <string name="refresh_now">立即刷新</string>
+    <string name="schedule_enabled">启用定时壁纸刷新</string>
+    <string name="wifi_only">仅在非计费网络下刷新</string>
+    <string name="lockscreen_supported">支持锁屏壁纸</string>
+    <string name="lockscreen_not_supported">当前设备不支持单独更新锁屏壁纸。</string>
+</resources>
