@@ -1,6 +1,6 @@
 # Andere for Android
 
-`Andere` 是一个面向 `yande.re` 的 Android 图片浏览与壁纸客户端，包名为 `com.andere.android`。
+`Andere` 是一个面向 `yande.re` 的 Android 图片浏览与壁纸客户端。
 
 Android 版代码由 AI 辅助编写。产品灵感来自 [UWP 版项目](https://github.com/AmazingDM/PRPR)。
 
