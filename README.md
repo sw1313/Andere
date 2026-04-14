@@ -4,6 +4,8 @@
 
 Android 版代码由 AI 辅助编写。产品灵感来自 [UWP 版项目](https://github.com/AmazingDM/PRPR)。
 
+原版项目目前已不可用，个人修复的 fork 版本见：(https://github.com/sw1313/PRPR)
+
 ## 截图预览
 
 | | |
