@@ -13,7 +13,9 @@ class SearchPostsUseCase(
         filter: PostFilter,
         page: Int,
     ): SearchResult {
-        val response = repository.searchPosts(query = query, page = page)
+        val metaTags = filter.buildMetaTags()
+        val finalQuery = if (metaTags.isEmpty()) query else "$query $metaTags".trim()
+        val response = repository.searchPosts(query = finalQuery, page = page)
         val filtered = filterPosts(response.posts, filter)
         return SearchResult(
             visiblePosts = filtered,

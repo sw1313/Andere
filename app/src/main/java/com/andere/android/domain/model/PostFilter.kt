@@ -1,5 +1,8 @@
 package com.andere.android.domain.model
 
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+
 data class PostFilter(
     val allowSafe: Boolean = true,
     val allowQuestionable: Boolean = false,
@@ -10,7 +13,25 @@ data class PostFilter(
     val allowHidden: Boolean = true,
     val allowHeld: Boolean = true,
     val tagBlacklist: String = "",
+    val sortOrder: Int = 0,   // 0=按时间, 1=按热度, 2=按收藏
+    val timeRange: Int = 0,   // 0=不限, 1=今天, 2=本周, 3=本月, 4=今年
 ) {
+    fun buildMetaTags(): String {
+        val parts = mutableListOf<String>()
+        when (sortOrder) {
+            1 -> parts.add("order:score")
+            2 -> parts.add("order:favcount")
+        }
+        val fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        when (timeRange) {
+            1 -> parts.add("date:>=${LocalDate.now().format(fmt)}")
+            2 -> parts.add("date:>=${LocalDate.now().minusDays(7).format(fmt)}")
+            3 -> parts.add("date:>=${LocalDate.now().minusDays(30).format(fmt)}")
+            4 -> parts.add("date:>=${LocalDate.now().minusDays(365).format(fmt)}")
+        }
+        return parts.joinToString(" ")
+    }
+
     fun resolveOrientation(isLandscape: Boolean): PostFilter {
         if (!useScreenOrientation) return this
         return copy(

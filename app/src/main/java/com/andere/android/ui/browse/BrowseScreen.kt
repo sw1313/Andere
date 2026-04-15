@@ -25,6 +25,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -33,8 +35,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
+
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -350,13 +354,27 @@ private fun FilterSheet(
             FilterCheckRow("可疑", filter.allowQuestionable) { filter = filter.copy(allowQuestionable = it) }
             FilterCheckRow("明显", filter.allowExplicit) { filter = filter.copy(allowExplicit = it) }
 
-            Text("方向", style = MaterialTheme.typography.titleMedium)
+            Text("长宽比", style = MaterialTheme.typography.titleMedium)
             FilterCheckRow("横向", filter.allowHorizontal) { filter = filter.copy(allowHorizontal = it) }
             FilterCheckRow("纵向", filter.allowVertical) { filter = filter.copy(allowVertical = it) }
 
             Text("可见性", style = MaterialTheme.typography.titleMedium)
             FilterCheckRow("显示隐藏图", filter.allowHidden) { filter = filter.copy(allowHidden = it) }
             FilterCheckRow("显示暂挂图", filter.allowHeld) { filter = filter.copy(allowHeld = it) }
+
+            SingleSelectFilterGroup(
+                label = "排序",
+                options = listOf("按时间", "按热度", "按收藏"),
+                selectedIndex = filter.sortOrder,
+                onSelect = { filter = filter.copy(sortOrder = it) },
+            )
+
+            SingleSelectFilterGroup(
+                label = "时间范围",
+                options = listOf("不限", "今天", "本周", "本月", "今年"),
+                selectedIndex = filter.timeRange,
+                onSelect = { filter = filter.copy(timeRange = it) },
+            )
 
             Text("收起面板后自动应用筛选", style = MaterialTheme.typography.bodySmall)
         }
@@ -428,5 +446,25 @@ private fun FilterCheckRow(
     ) {
         Checkbox(checked = checked, onCheckedChange = onCheckedChange)
         Text(label)
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun SingleSelectFilterGroup(
+    label: String,
+    options: List<String>,
+    selectedIndex: Int,
+    onSelect: (Int) -> Unit,
+) {
+    Text(label, style = MaterialTheme.typography.titleMedium)
+    FlowRow(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        options.forEachIndexed { index, text ->
+            FilterChip(selected = index == selectedIndex, onClick = { onSelect(index) }, label = { Text(text) })
+        }
     }
 }

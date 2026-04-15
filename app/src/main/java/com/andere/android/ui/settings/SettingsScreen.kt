@@ -507,10 +507,22 @@ private fun TargetConfigSection(
             )
         }
 
-        EnumSelector("图片质量", ImageQuality.entries, config.quality, { s -> onUpdateConfig { it.copy(quality = s) } }, { it.displayName() })
-        EnumSelector("裁切方式", CropMode.entries, config.cropMode, { s -> onUpdateConfig { it.copy(cropMode = s) } }, { it.displayName() })
+        SingleSelectFilterGroup("图片质量", ImageQuality.entries.map { it.displayName() }, ImageQuality.entries.indexOf(config.quality)) { idx -> onUpdateConfig { it.copy(quality = ImageQuality.entries[idx]) } }
+        SingleSelectFilterGroup("裁切方式", CropMode.entries.map { it.displayName() }, CropMode.entries.indexOf(config.cropMode)) { idx -> onUpdateConfig { it.copy(cropMode = CropMode.entries[idx]) } }
 
         Text("筛选", style = MaterialTheme.typography.titleMedium)
+        SingleSelectFilterGroup(
+            label = "排序",
+            options = listOf("按时间", "按热度", "按收藏"),
+            selectedIndex = config.filter.sortOrder,
+            onSelect = { idx -> onUpdateConfig { it.copy(filter = it.filter.copy(sortOrder = idx)) } },
+        )
+        SingleSelectFilterGroup(
+            label = "时间范围",
+            options = listOf("不限", "今天", "本周", "本月", "今年"),
+            selectedIndex = config.filter.timeRange,
+            onSelect = { idx -> onUpdateConfig { it.copy(filter = it.filter.copy(timeRange = idx)) } },
+        )
         MultiSelectFilterGroup(
             label = "评级",
             options = listOf("安全" to config.filter.allowSafe, "可疑" to config.filter.allowQuestionable, "明显" to config.filter.allowExplicit),
@@ -525,7 +537,7 @@ private fun TargetConfigSection(
             },
         )
         MultiSelectFilterGroup(
-            label = "长阔比",
+            label = "长宽比",
             options = listOf(
                 "根据屏幕方向" to config.filter.useScreenOrientation,
                 "横向" to (config.filter.allowHorizontal && !config.filter.useScreenOrientation),
@@ -1004,6 +1016,19 @@ private fun MultiSelectFilterGroup(label: String, options: List<Pair<String, Boo
         Text(label, style = MaterialTheme.typography.titleSmall)
         FlowRow(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             options.forEach { (text, selected) -> FilterChip(selected = selected, onClick = { onToggle(text, !selected) }, label = { Text(text) }) }
+        }
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun SingleSelectFilterGroup(label: String, options: List<String>, selectedIndex: Int, onSelect: (Int) -> Unit) {
+    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        Text(label, style = MaterialTheme.typography.titleSmall)
+        FlowRow(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            options.forEachIndexed { index, text ->
+                FilterChip(selected = index == selectedIndex, onClick = { onSelect(index) }, label = { Text(text) })
+            }
         }
     }
 }

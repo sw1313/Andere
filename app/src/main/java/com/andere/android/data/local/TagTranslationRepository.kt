@@ -133,14 +133,7 @@ class TagTranslationRepository(private val context: Context) {
         }
     }
 
-    private fun loadBundledFromAssets(): List<TagEntry> =
-        context.assets.open("tag_translations.tsv").bufferedReader(Charsets.UTF_8).useLines { lines ->
-            lines.mapNotNull { line ->
-                val parts = line.split('\t', limit = 3)
-                if (parts.size >= 3) TagEntry(parts[0], parts[1].toIntOrNull() ?: 0, parts[2])
-                else null
-            }.toList()
-        }
+    private fun loadBundledFromAssets(): List<TagEntry> = emptyList()
 
     private fun loadSyncedFromDisk(): List<TagEntry>? {
         val f = syncedFile

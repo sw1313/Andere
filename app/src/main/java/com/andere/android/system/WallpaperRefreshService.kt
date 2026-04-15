@@ -29,6 +29,9 @@ class WallpaperRefreshService(
         val isLandscape = ScreenOrientationHelper.isCurrentLandscape(context)
         val resolvedFilter = config.filter.resolveOrientation(isLandscape)
 
+        val metaTags = resolvedFilter.buildMetaTags()
+        val finalQuery = if (metaTags.isEmpty()) config.query else "${config.query} $metaTags".trim()
+
         val retentionMillis = config.recordRetentionDays.toLong() * 24 * 60 * 60 * 1000
         val sinceMillis = System.currentTimeMillis() - retentionMillis
         val recentIds = wallpaperRecordDao.postIdsSinceByTarget(target.name, sinceMillis).toSet()
@@ -41,7 +44,7 @@ class WallpaperRefreshService(
         var nextPage: Int? = 1
 
         while (nextPage != null && freshCount < targetCount) {
-            val postPage = postRepository.searchPosts(config.query, page)
+            val postPage = postRepository.searchPosts(finalQuery, page)
             val filtered = filterPostsUseCase(postPage.posts, resolvedFilter)
             for (incoming in filtered) {
                 if (incoming.id in seenIds) continue

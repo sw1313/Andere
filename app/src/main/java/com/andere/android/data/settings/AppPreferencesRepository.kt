@@ -128,6 +128,8 @@ class AppPreferencesRepository(
                 allowHidden = prefs[k.allowHidden] ?: true,
                 allowHeld = prefs[k.allowHeld] ?: true,
                 tagBlacklist = prefs[k.tagBlacklist] ?: "",
+                sortOrder = prefs[k.sortOrder] ?: 0,
+                timeRange = prefs[k.timeRange] ?: 0,
             ),
             notificationEnabled = prefs[k.notificationEnabled] ?: true,
             displayRecordCount = prefs[k.displayRecordCount] ?: 20,
@@ -145,6 +147,8 @@ class AppPreferencesRepository(
             allowHidden = prefs[k.allowHidden] ?: true,
             allowHeld = prefs[k.allowHeld] ?: true,
             tagBlacklist = prefs[k.tagBlacklist] ?: "",
+            sortOrder = prefs[k.sortOrder] ?: 0,
+            timeRange = prefs[k.timeRange] ?: 0,
         )
 
     private fun writeConfig(prefs: androidx.datastore.preferences.core.MutablePreferences, k: ConfigKeys, c: WallpaperRefreshConfig) {
@@ -165,6 +169,8 @@ class AppPreferencesRepository(
         prefs[k.allowHidden] = c.filter.allowHidden
         prefs[k.allowHeld] = c.filter.allowHeld
         prefs[k.tagBlacklist] = c.filter.tagBlacklist
+        prefs[k.sortOrder] = c.filter.sortOrder
+        prefs[k.timeRange] = c.filter.timeRange
         prefs[k.notificationEnabled] = c.notificationEnabled
         prefs[k.displayRecordCount] = c.displayRecordCount
         prefs[k.recordRetentionDays] = c.recordRetentionDays
@@ -184,6 +190,8 @@ class AppPreferencesRepository(
         prefs[k.allowHidden] = filter.allowHidden
         prefs[k.allowHeld] = filter.allowHeld
         prefs[k.tagBlacklist] = filter.tagBlacklist
+        prefs[k.sortOrder] = filter.sortOrder
+        prefs[k.timeRange] = filter.timeRange
     }
 
     private fun mapSaveImageConfig(preferences: Preferences, keys: SaveKeys): SaveImageConfig = SaveImageConfig(
@@ -223,6 +231,8 @@ class AppPreferencesRepository(
         val allowHidden = booleanPreferencesKey("${prefix}filter_hidden")
         val allowHeld = booleanPreferencesKey("${prefix}filter_held")
         val tagBlacklist = stringPreferencesKey("${prefix}filter_blacklist")
+        val sortOrder = intPreferencesKey("${prefix}filter_sort_order")
+        val timeRange = intPreferencesKey("${prefix}filter_time_range")
         val notificationEnabled = booleanPreferencesKey("${prefix}notification_enabled")
         val displayRecordCount = intPreferencesKey("${prefix}display_record_count")
         val recordRetentionDays = intPreferencesKey("${prefix}record_retention_days")
@@ -238,6 +248,8 @@ class AppPreferencesRepository(
         val allowHidden = booleanPreferencesKey("${prefix}filter_hidden")
         val allowHeld = booleanPreferencesKey("${prefix}filter_held")
         val tagBlacklist = stringPreferencesKey("${prefix}filter_blacklist")
+        val sortOrder = intPreferencesKey("${prefix}filter_sort_order")
+        val timeRange = intPreferencesKey("${prefix}filter_time_range")
     }
 
     private class SaveKeys(prefix: String) {
