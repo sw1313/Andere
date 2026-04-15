@@ -364,7 +364,7 @@ private fun FilterSheet(
 
             SingleSelectFilterGroup(
                 label = "排序",
-                options = listOf("按时间", "按热度", "按收藏"),
+                options = listOf("按时间", "按评分"),
                 selectedIndex = filter.sortOrder,
                 onSelect = { filter = filter.copy(sortOrder = it) },
             )

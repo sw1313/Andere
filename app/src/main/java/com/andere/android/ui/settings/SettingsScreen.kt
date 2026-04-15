@@ -513,7 +513,7 @@ private fun TargetConfigSection(
         Text("筛选", style = MaterialTheme.typography.titleMedium)
         SingleSelectFilterGroup(
             label = "排序",
-            options = listOf("按时间", "按热度", "按收藏"),
+            options = listOf("按时间", "按评分"),
             selectedIndex = config.filter.sortOrder,
             onSelect = { idx -> onUpdateConfig { it.copy(filter = it.filter.copy(sortOrder = idx)) } },
         )
