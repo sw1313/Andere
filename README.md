@@ -1,8 +1,8 @@
 # Andere for Android
 
-`Andere` 是一个面向 `yande.re` 的 Android 图片浏览与壁纸客户端，包名为 `com.andere.android`。
+`Andere` 是一个面向 `yande.re` 的 Android 图片浏览与壁纸客户端。
 
-Android 版代码由 AI 辅助编写。产品灵感来自 [UWP 版项目](https://github.com/AmazingDM/PRPR)。
+Android 版代码由 AI 辅助编写。产品灵感来自 [UWP 版项目](https://github.com/AmazingDM/PRPR)。注：原版项目目前已不可用，个人修复的 fork 版本见：https://github.com/sw1313/PRPR
 
 ## 截图预览
 
@@ -37,8 +37,7 @@ Android 版代码由 AI 辅助编写。产品灵感来自 [UWP 版项目](https:
 - 搜索与输入时显示中文标签提示。
 - 在设置页手动同步最新翻译。
 - 通过 `WorkManager` 按小时自动同步翻译。
-- 配置 GitHub PAT 后执行上传后再下载的合并同步流程。
-- 详情页长按标签后，可直接补充中文翻译或备注。
+- 详情页长按标签后，可直接修改或补充中文翻译或备注。
 
 ## 壁纸与锁屏刷新
 
