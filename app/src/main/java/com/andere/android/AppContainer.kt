@@ -20,6 +20,7 @@ import com.andere.android.system.WallpaperApplier
 import com.andere.android.system.WallpaperImageProcessor
 import com.andere.android.system.WallpaperRefreshService
 import com.andere.android.system.WallpaperScheduler
+import com.andere.android.data.remote.YandeDns
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 
@@ -28,8 +29,11 @@ class AppContainer(
 ) {
     private val yandeHost = "https://yande.re"
 
+    val yandeDns = YandeDns()
+
     val okHttpClient: OkHttpClient by lazy {
         OkHttpClient.Builder()
+            .dns(yandeDns)
             .addInterceptor(YandeRequestInterceptor(yandeHost))
             .addInterceptor(HttpLoggingInterceptor().apply {
                 level = HttpLoggingInterceptor.Level.BASIC

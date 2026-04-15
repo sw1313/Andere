@@ -219,6 +219,8 @@ fun SettingsScreen(
                         onDismissMessage = viewModel::dismissTagSyncMessage,
                         browseImageSize = state.browseImageSize,
                         onBrowseImageSizeChanged = viewModel::setBrowseImageSize,
+                        useBuiltInHosts = state.useBuiltInHosts,
+                        onToggleBuiltInHosts = viewModel::setUseBuiltInHosts,
                     )
                     "壁纸" -> TargetConfigSection(
                         label = "壁纸",
@@ -324,6 +326,8 @@ private fun GeneralSection(
     onDismissMessage: () -> Unit,
     browseImageSize: BrowseImageSize,
     onBrowseImageSizeChanged: (BrowseImageSize) -> Unit,
+    useBuiltInHosts: Boolean,
+    onToggleBuiltInHosts: (Boolean) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -332,6 +336,11 @@ private fun GeneralSection(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
+        Text("网络", style = MaterialTheme.typography.titleMedium)
+        LabeledSwitch("使用内置 Hosts", useBuiltInHosts, onToggleBuiltInHosts)
+
+        HorizontalDivider()
+
         Text("浏览", style = MaterialTheme.typography.titleMedium)
         Row(
             verticalAlignment = Alignment.CenterVertically,

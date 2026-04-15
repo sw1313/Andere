@@ -44,6 +44,7 @@ class SettingsViewModel(
         val autoSyncTags: Boolean,
         val hasGithubPat: Boolean,
         val browseImageSize: BrowseImageSize = BrowseImageSize.Small,
+        val useBuiltInHosts: Boolean = false,
     )
 
     private val _uiState = MutableStateFlow(SettingsUiState())
@@ -71,6 +72,8 @@ class SettingsViewModel(
                 base.copy(hasGithubPat = pat.isNotBlank())
             }.combine(preferencesRepository.browseImageSize) { base, size ->
                 base.copy(browseImageSize = size)
+            }.combine(preferencesRepository.useBuiltInHosts) { base, hosts ->
+                base.copy(useBuiltInHosts = hosts)
             }
             val wpRecordsFlow = preferencesRepository.wallpaperConfig
                 .map { it.displayRecordCount.coerceIn(1, 100) }
@@ -96,6 +99,7 @@ class SettingsViewModel(
                     autoSyncTags = base.autoSyncTags,
                     hasGithubPat = base.hasGithubPat,
                     browseImageSize = base.browseImageSize,
+                    useBuiltInHosts = base.useBuiltInHosts,
                 )
             }.collect { _uiState.value = it }
         }
@@ -241,6 +245,10 @@ class SettingsViewModel(
         viewModelScope.launch { preferencesRepository.setBrowseImageSize(size) }
     }
 
+    fun setUseBuiltInHosts(enabled: Boolean) {
+        viewModelScope.launch { preferencesRepository.setUseBuiltInHosts(enabled) }
+    }
+
     fun dismissTagSyncMessage() {
         _uiState.value = _uiState.value.copy(tagSyncMessage = null)
     }
@@ -285,4 +293,5 @@ data class SettingsUiState(
     val isUploadingTags: Boolean = false,
     val tagSyncMessage: String? = null,
     val browseImageSize: BrowseImageSize = BrowseImageSize.Small,
+    val useBuiltInHosts: Boolean = false,
 )

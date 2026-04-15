@@ -31,10 +31,15 @@ class AndereApplication : Application(), ImageLoaderFactory {
         applicationScope.launch {
             val repo = appContainer.preferencesRepository
             val scheduler = appContainer.wallpaperScheduler
+
+            appContainer.yandeDns.enabled = repo.useBuiltInHosts.first()
+
             scheduler.syncSchedule(repo.wallpaperConfig.first(), BackgroundTarget.Wallpaper)
             scheduler.syncSchedule(repo.lockscreenConfig.first(), BackgroundTarget.LockScreen)
 
             syncTagSchedule(repo.autoSyncTags.first())
+
+            repo.useBuiltInHosts.collect { appContainer.yandeDns.enabled = it }
         }
     }
 
@@ -62,6 +67,7 @@ class AndereApplication : Application(), ImageLoaderFactory {
 
     override fun newImageLoader(): ImageLoader {
         val imageClient = okhttp3.OkHttpClient.Builder()
+            .dns(appContainer.yandeDns)
             .addInterceptor(com.andere.android.data.remote.YandeRequestInterceptor("https://yande.re"))
             .build()
         return ImageLoader.Builder(this)

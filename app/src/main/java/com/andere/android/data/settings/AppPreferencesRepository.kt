@@ -55,6 +55,14 @@ class AppPreferencesRepository(
         context.dataStore.edit { it[githubPatKey] = pat }
     }
 
+    private val useBuiltInHostsKey = booleanPreferencesKey("use_built_in_hosts")
+
+    val useBuiltInHosts: Flow<Boolean> = context.dataStore.data.map { it[useBuiltInHostsKey] ?: false }
+
+    suspend fun setUseBuiltInHosts(enabled: Boolean) {
+        context.dataStore.edit { it[useBuiltInHostsKey] = enabled }
+    }
+
     private val browseImageSizeKey = stringPreferencesKey("browse_image_size")
 
     val browseImageSize: Flow<BrowseImageSize> =
