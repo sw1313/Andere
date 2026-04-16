@@ -54,16 +54,30 @@ class TagSyncService(
     }
 
     private fun fetchRemoteEntries(): List<TagEntry> {
-        val request = Request.Builder()
-            .url(RAW_URL)
-            .header("Cache-Control", "no-cache")
-            .get()
-            .build()
-        val response = httpClient.newCall(request).execute()
-        if (!response.isSuccessful) throw Exception("下载失败: HTTP ${response.code}")
+        val errors = mutableListOf<String>()
+        for (url in DOWNLOAD_URLS) {
+            try {
+                val request = Request.Builder()
+                    .url(url)
+                    .header("Cache-Control", "no-cache")
+                    .get()
+                    .build()
+                val response = httpClient.newCall(request).execute()
+                if (!response.isSuccessful) {
+                    errors.add("$url -> HTTP ${response.code}")
+                    continue
+                }
+                val body = response.body?.string() ?: continue
+                return parseEntries(body)
+            } catch (e: Exception) {
+                errors.add("$url -> ${e.message}")
+            }
+        }
+        throw Exception("所有下载源均失败:\n${errors.joinToString("\n")}")
+    }
 
-        val body = response.body?.string() ?: throw Exception("下载失败: 响应为空")
-        val arr = JSONArray(body)
+    private fun parseEntries(json: String): List<TagEntry> {
+        val arr = JSONArray(json)
         val entries = mutableListOf<TagEntry>()
         for (i in 0 until arr.length()) {
             val obj = arr.getJSONObject(i)
@@ -128,7 +142,13 @@ class TagSyncService(
 
     companion object {
         private const val REPO = "sw1313/danbooru-tags-translation"
-        private const val RAW_URL = "https://raw.githubusercontent.com/$REPO/main/tags.json"
-        private const val API_CONTENTS_URL = "https://api.github.com/repos/$REPO/contents/tags.json"
+        private const val FILE_PATH = "tags.json"
+        private const val API_CONTENTS_URL = "https://api.github.com/repos/$REPO/contents/$FILE_PATH"
+        private val DOWNLOAD_URLS = listOf(
+            "https://raw.githubusercontent.com/$REPO/main/$FILE_PATH",
+            "https://cdn.jsdelivr.net/gh/$REPO@main/$FILE_PATH",
+            "https://mirror.ghproxy.com/https://raw.githubusercontent.com/$REPO/main/$FILE_PATH",
+            "https://cdn.staticaly.com/gh/$REPO/main/$FILE_PATH",
+        )
     }
 }
