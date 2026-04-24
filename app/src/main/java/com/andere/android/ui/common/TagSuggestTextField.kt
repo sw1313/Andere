@@ -26,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextRange
@@ -58,6 +59,7 @@ fun TagSuggestTextField(
     var textFieldValue by remember { mutableStateOf(TextFieldValue(value, TextRange(value.length))) }
     var suggestions by remember { mutableStateOf<List<TagSuggestion>>(emptyList()) }
     var suppressSuggestions by remember { mutableStateOf(false) }
+    var isFocused by remember { mutableStateOf(false) }
     var fieldHeightPx by remember { mutableStateOf(0) }
     var translations by remember { mutableStateOf<Map<String, String>>(emptyMap()) }
 
@@ -83,7 +85,11 @@ fun TagSuggestTextField(
         else TagDisplayTransformation(translations)
     }
 
-    LaunchedEffect(value) {
+    LaunchedEffect(value, isFocused) {
+        if (!isFocused) {
+            suggestions = emptyList()
+            return@LaunchedEffect
+        }
         if (suppressSuggestions) {
             suppressSuggestions = false
             return@LaunchedEffect
@@ -106,6 +112,10 @@ fun TagSuggestTextField(
             },
             modifier = Modifier
                 .fillMaxWidth()
+                .onFocusChanged { state ->
+                    isFocused = state.isFocused
+                    if (!state.isFocused) suggestions = emptyList()
+                }
                 .onGloballyPositioned { fieldHeightPx = it.size.height },
             label = { Text(label) },
             singleLine = singleLine,
@@ -130,7 +140,7 @@ fun TagSuggestTextField(
             },
         )
 
-        if (suggestions.isNotEmpty() && value.isNotBlank()) {
+        if (suggestions.isNotEmpty() && value.isNotBlank() && isFocused) {
             Popup(
                 alignment = Alignment.TopStart,
                 offset = IntOffset(0, fieldHeightPx),

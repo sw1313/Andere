@@ -425,7 +425,7 @@ private fun buildJustifiedRows(
         aspectSum += post.preferredRatio.coerceAtLeast(0.4)
         val gaps = (current.size - 1).coerceAtLeast(0) * spacingPx
         val estimatedHeight = ((containerWidthPx - gaps) / aspectSum).toInt()
-        if (current.size > 1 && estimatedHeight <= targetRowHeightPx) {
+        if (estimatedHeight <= targetRowHeightPx) {
             flushRow(isLast = false)
         }
     }
