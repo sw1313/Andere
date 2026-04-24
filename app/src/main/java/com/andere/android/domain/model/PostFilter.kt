@@ -26,6 +26,22 @@ data class PostFilter(
             3 -> parts.add("date:>=${LocalDate.now().minusDays(30).format(fmt)}")
             4 -> parts.add("date:>=${LocalDate.now().minusDays(365).format(fmt)}")
         }
+
+        // 评级服务器端过滤：减少客户端废弃率
+        val activeCount = listOf(allowSafe, allowQuestionable, allowExplicit).count { it }
+        when (activeCount) {
+            1 -> {
+                if (allowSafe) parts.add("rating:safe")
+                else if (allowQuestionable) parts.add("rating:questionable")
+                else if (allowExplicit) parts.add("rating:explicit")
+            }
+            2 -> {
+                if (!allowSafe) parts.add("-rating:safe")
+                else if (!allowQuestionable) parts.add("-rating:questionable")
+                else if (!allowExplicit) parts.add("-rating:explicit")
+            }
+        }
+
         return parts.joinToString(" ")
     }
 
